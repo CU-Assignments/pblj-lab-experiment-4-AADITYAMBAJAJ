@@ -79,3 +79,146 @@ Input:
 Remove Card: 10 of Diamonds
 Expected Output:
 Card removed: 10 of Diamonds
+
+
+ // CODE EXP4.2 : 
+
+  import java.util.*;
+
+class Card {
+    private String suit;
+    private String rank;
+
+    public Card(String rank, String suit) {
+        this.rank = rank;
+        this.suit = suit;
+    }
+
+    public String getSuit() {
+        return suit;
+    }
+
+    public String getRank() {
+        return rank;
+    }
+
+    @Override
+    public String toString() {
+        return rank + " of " + suit;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Card card = (Card) obj;
+        return Objects.equals(rank, card.rank) && Objects.equals(suit, card.suit);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(rank, suit);
+    }
+}
+
+class CardCollection {
+    private Map<String, List<Card>> cardMap;
+    private Set<Card> cardSet;
+
+    public CardCollection() {
+        cardMap = new HashMap<>();
+        cardSet = new HashSet<>();
+    }
+
+    public void addCard(String rank, String suit) {
+        Card card = new Card(rank, suit);
+        if (cardSet.contains(card)) {
+            System.out.println("Error: Card \"" + card + "\" already exists.");
+            return;
+        }
+        cardSet.add(card);
+        cardMap.putIfAbsent(suit, new ArrayList<>());
+        cardMap.get(suit).add(card);
+        System.out.println("Card added: " + card);
+    }
+
+    public void removeCard(String rank, String suit) {
+        Card card = new Card(rank, suit);
+        if (!cardSet.contains(card)) {
+            System.out.println("Error: Card \"" + card + "\" does not exist.");
+            return;
+        }
+        cardSet.remove(card);
+        cardMap.get(suit).remove(card);
+        if (cardMap.get(suit).isEmpty()) {
+            cardMap.remove(suit);
+        }
+        System.out.println("Card removed: " + card);
+    }
+
+    public void findCardsBySuit(String suit) {
+        if (!cardMap.containsKey(suit)) {
+            System.out.println("No cards found for " + suit + ".");
+            return;
+        }
+        for (Card card : cardMap.get(suit)) {
+            System.out.println(card);
+        }
+    }
+
+    public void displayAllCards() {
+        if (cardSet.isEmpty()) {
+            System.out.println("No cards found.");
+            return;
+        }
+        for (Card card : cardSet) {
+            System.out.println(card);
+        }
+    }
+}
+
+public class CardCollectionSystem {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        CardCollection collection = new CardCollection();
+
+        while (true) {
+            System.out.println("\nChoose an option: \n1. Add Card\n2. Remove Card\n3. Find Cards by Suit\n4. Display All Cards\n5. Exit");
+            int choice = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter rank: ");
+                    String rank = scanner.nextLine();
+                    System.out.print("Enter suit: ");
+                    String suit = scanner.nextLine();
+                    collection.addCard(rank, suit);
+                    break;
+                case 2:
+                    System.out.print("Enter rank: ");
+                    rank = scanner.nextLine();
+                    System.out.print("Enter suit: ");
+                    suit = scanner.nextLine();
+                    collection.removeCard(rank, suit);
+                    break;
+                case 3:
+                    System.out.print("Enter suit: ");
+                    suit = scanner.nextLine();
+                    collection.findCardsBySuit(suit);
+                    break;
+                case 4:
+                    collection.displayAllCards();
+                    break;
+                case 5:
+                    System.out.println("Exiting...");
+                    scanner.close();
+                    return;
+                default:
+                    System.out.println("Invalid choice. Try again.");
+            }
+        }
+    }
+}
+
+  
